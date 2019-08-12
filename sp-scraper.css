@@ -21,6 +21,9 @@ h2 {
     margin: auto;
     padding: 24px;
 }
+.sp_toc {
+    padding-left: 0;
+}
 .sp_note {
     position: relative;
 }
