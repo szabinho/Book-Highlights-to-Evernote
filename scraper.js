@@ -252,7 +252,7 @@ function scrapeHighlights(docToScrape) {
 
     // Templating and dom manipulation
 
-    var sp_navHTML = '<ol>';
+    var sp_navHTML = '';
     var sectionHTML = '',
     sp_sectionEl = document.createElement('article');
     sp_sectionEl.classList.add('sp_highlights');
@@ -274,10 +274,8 @@ function scrapeHighlights(docToScrape) {
         sectionHTML += '</section>';
     });
 
-    sp_navHTML += '</ol>';
-
     var sp_header = document.createElement('header');
-    sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><nav class="sp_toc"></nav>';
+    sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
     sp_header.querySelector('.sp_title').innerText = docJSON.title; 
     sp_header.querySelector('.sp_author').innerText = docJSON.authors;
     sp_header.querySelector('.sp_toc').innerHTML = sp_navHTML;
