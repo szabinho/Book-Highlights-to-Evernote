@@ -258,7 +258,7 @@ function scrapeHighlights(docToScrape) {
     sp_sectionEl.classList.add('sp_highlights');
 
     docJSON.sections.forEach((section, curr) => {
-        sp_navHTML += `<li><a href="#sp_section${curr+1}">${section.sectionTitle} (${section.noteCount})</a></li>`;
+        sp_navHTML += `<li id="#sp_section${curr+1}-toc">${section.sectionTitle} (${section.noteCount})</li>`;
         
         sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
         sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
