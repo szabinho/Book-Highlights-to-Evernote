@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="scraper.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300|Montserrat:400&display=swap&subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="sp-scraper.css">
+</head>
+<body>
+    <div>
+        <label for="load-file">Load a file:</label>
+        <input type="file" id="load-file">
+        <button class="sp_generate">Generate</button>
+    </div>
+    <script>
+        var htmlframe = document.createElement('iframe'),
+            file = document.querySelector('#load-file'),
+            btn_generate = document.querySelector('.sp_generate');
+
+        btn_generate.addEventListener('click', sp_generate);
+
+        function sp_generate() {
+            var url = URL.createObjectURL(file.files[0]);
+            htmlframe.src = url;
+            htmlframe.id = 'sp_util-frame';
+            htmlframe.onload = function() {
+                scrapeHighlights(htmlframe.contentDocument);
+            }
+            document.querySelector('body').append(htmlframe);
+        }
+    </script>
+</body>
+</html>
