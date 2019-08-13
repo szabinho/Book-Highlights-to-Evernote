@@ -31,6 +31,9 @@ h2 {
 .sp_note--yellow .sp_note-level {
     color: rgb(247, 206, 0);
 }
+.sp_note--blue .sp_note-level {
+    color: rgb(66, 165, 255);
+}
 .sp_note-location {
     color: rgb(177, 187, 186);
 }
