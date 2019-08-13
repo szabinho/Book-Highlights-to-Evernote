@@ -10,15 +10,18 @@
     
     <link rel="stylesheet" href="sp-scraper.css">
 </head>
-<body>
+<body class="is-waiting-for-input">
     <div class="highlights-input">
         <input type="file" id="load-file">
         <label class="highlights-input__dropzone" for="load-file"><span class="highlights-input__dropzone__label">Drop an export (HTML file) of highlights here<br>or click to browse files</span></label>
     </div>
+    <p class="reset-highlights"><a href="#" class="reset-highlights__cta">Reset & start another</a></p>
     <script>
         var htmlframe = document.createElement('iframe'),
             fileInput = document.querySelector('#load-file'),
             btn_generate = document.querySelector('.sp_generate'),
+            btn_reset = document.querySelector('.reset-highlights__cta'),
+            bodyEl = document.querySelector('body'),
             dropzone = document.querySelector('.highlights-input__dropzone');
         
         fileInput.addEventListener('change', () => {sp_generate(fileInput.files[0])});
@@ -58,6 +61,13 @@
             dropzone.classList.remove('highlights-input__dropzone--active');
         }
 
+        btn_reset.addEventListener('click', (e) => {
+            e.preventDefault();
+            bodyEl.classList.remove('is-showing-highlights');
+            bodyEl.removeChild(bodyEl.querySelector('.sp_highlights'));
+            fileInput.value = null;
+        });
+
         function sp_generate(fileToScrape) {
             var url = URL.createObjectURL(fileToScrape);
             htmlframe.src = url;
@@ -65,7 +75,8 @@
             htmlframe.onload = function() {
                 scrapeHighlights(htmlframe.contentDocument);
             }
-            document.querySelector('body').append(htmlframe);
+            bodyEl.append(htmlframe);
+            bodyEl.classList.add('is-showing-highlights');
         }
     </script>
 </body>
