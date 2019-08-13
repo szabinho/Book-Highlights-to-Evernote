@@ -11,20 +11,20 @@
     <link rel="stylesheet" href="sp-scraper.css">
 </head>
 <body>
-    <div>
-        <label for="load-file">Load a file:</label>
+    <div class="highlights-input">
         <input type="file" id="load-file">
-        <button class="sp_generate">Generate</button>
+        <label class="highlights-input__dropzone" for="load-file"><span class="highlights-input__dropzone__label">Drop here an export (HTML file) of highlights<br>or click here to browse</span></label>
     </div>
     <script>
         var htmlframe = document.createElement('iframe'),
-            file = document.querySelector('#load-file'),
+            fileInput = document.querySelector('#load-file'),
             btn_generate = document.querySelector('.sp_generate');
-
-        btn_generate.addEventListener('click', sp_generate);
+        
+        fileInput.addEventListener('change', sp_generate);
 
         function sp_generate() {
-            var url = URL.createObjectURL(file.files[0]);
+            console.log(fileInput.files);
+            var url = URL.createObjectURL(fileInput.files[0]);
             htmlframe.src = url;
             htmlframe.id = 'sp_util-frame';
             htmlframe.onload = function() {
