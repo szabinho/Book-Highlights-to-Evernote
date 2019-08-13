@@ -454,32 +454,49 @@ const sp_IbookScraper = (function(){
                 "sectionTitle": undefined,
                 "noteCount": undefined,
                 "notes": []
-            };
+            },
+            tempHeader;
 
-            sectionJSON.sectionTitle = section[0].innerText;
-            // First element is the title, every note is represented with 
-            // 2 elements: .noteHeading, .noteText
-            // so the number of notes are half the number of elements in a section 
-            // not counting the title
-            sectionJSON.noteCount = (section.length-1)/2; 
+            // Every note is wrapped in .annotation element
+            // .annotation
+            //      .annotationheader
+            //          .annotationdate
+            //          .annotationchapter - includes the location as page number, ex: ', p. 8'
+            //      .annotationcontent
+            //          .annotationselectionMarker.yellow - highlight colour/level
+            //          .annotationselectioninnermargin - decorative element, can be ignored
+            //          .annotationrepresentativetext - highlighted text
+            //          .annotationnote
 
-            for (let index = 1; index < section.length; index = index+2) {
+            tempHeader = section[0].querySelector('.annotationchapter').innerText;
+            tempHeader = tempHeader.split(', p. ');
+            sectionJSON.sectionTitle = tempHeader[0];
+
+            sectionJSON.noteCount = section.length; 
+            section.forEach(el => {
                 var note = {
                     "type": undefined,
                     "location": undefined,
                     "level": undefined,
                     "text": undefined
-                };
-                const noteHeading = section[index];
-                const noteText = section[index+1];
+                },
+                elements = {};
 
-                note.type       = noteHeading.childNodes[0].nodeValue.trim().replace('(','');
-                note.level      = noteHeading.childNodes[1].innerText.trim();
-                note.location   = noteHeading.childNodes[2].nodeValue.trim().replace(') - Location ','');
-                note.text       = noteText.innerText
+                if (el.classList.contains('annotation')) {
+                    elements.noteHeading = el.querySelector('.annotationchapter');
+                    elements.noteLevel = el.querySelector('.annotationselectionMarker');
+                    elements.noteText = el.querySelector('.annotationrepresentativetext');
 
-                sectionJSON.notes.push(note);
-            }
+                    note.type       = undefined;
+                    // Level: assumption: second class in the classList is the level value
+                    note.level      = elements.noteLevel.classList.value.split(' ')[1];
+                    // Location: examples in .annotationchapter element: "Chapter One: What Is Management?, p. 27"
+                    note.location   = elements.noteHeading.innerText.split(', p. ')[1];
+                    note.text       = elements.noteText.innerText;
+
+                    sectionJSON.notes.push(note);
+                }
+            });
             
             sectionsToJSON.push(sectionJSON);
 
