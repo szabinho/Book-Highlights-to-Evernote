@@ -1,6 +1,12 @@
 function scrapeHighlights(sp_docToScrape) {
-    
-    var reformatedJSON = sp_KindleScraper.getHighlights(sp_docToScrape);
+    var reformatedJSON;
+
+    if (sp_docToScrape.querySelector('.bodyContainer')) {
+        reformatedJSON = sp_KindleScraper.getHighlights(sp_docToScrape);
+    }
+    else {
+        reformatedJSON = sp_IbookScraper.getHighlights(sp_docToScrape);
+    } 
 
     // Templating and dom manipulation
 
