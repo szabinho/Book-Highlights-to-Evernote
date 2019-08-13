@@ -1,86 +1,126 @@
-function scrapeHighlights(docToScrape) {
-    /** 
-     * NodeLists are array-like but don't feature many of the methods provided by the Array, 
-     * like forEach, map, filter, etc.
-     * 
-     * a very simple way to convert NodeLists to Arrays:
-     *   
-     *   var nodesArray = Array.prototype.slice.call(document.querySelectorAll("div"));
-     * 
-     * https://davidwalsh.name/nodelist-array
-     */ 
+function scrapeHighlights(sp_docToScrape) {
+    
+    var reformatedJSON = sp_KindleScraper.getHighlights(sp_docToScrape);
 
-    /**
-     * Kindle app exports book highlights to HTML which has whitespace elements.
-     * These ignorable whitespace elements make it hard to manipulate and create new layout.
-     * 
-     * https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Whitespace_in_the_DOM
-     * 
-     * The Javascript code below defines several functions that make it easier 
-     * to deal with whitespace in the DOM:
-     *   - is_all_ws
-     *   - is_ignorable
-     */
+    // Templating and dom manipulation
 
-    /**
-     * Throughout, whitespace is defined as one of the characters
-     *  "\t" TAB \u0009
-     *  "\n" LF  \u000A
-     *  "\r" CR  \u000D
-     *  " "  SPC \u0020
-     *
-     * This does not use Javascript's "\s" because that includes non-breaking
-     * spaces (and also some other characters).
-     */
+    var sp_navHTML = '';
+    var sectionHTML = '',
+    sp_sectionEl = document.createElement('article');
+    sp_sectionEl.classList.add('sp_highlights');
 
+    reformatedJSON.sections.forEach((section, curr) => {
+        sp_navHTML += `<li id="#sp_section${curr+1}-toc">${section.sectionTitle}&nbsp;(${section.noteCount})</li>`;
+        
+        sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
+        sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
+
+        section.notes.forEach((note) => {
+            var noteHTML = 
+            `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
+            <span class="sp_note-level">&bull;</span> ${note.text}
+            <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span>
+            </p>`;
+            sectionHTML += noteHTML;
+        });
+        sectionHTML += '</section>';
+    });
+
+    var sp_header = document.createElement('header');
+    sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
+    sp_header.querySelector('.sp_title').innerText = reformatedJSON.title; 
+    sp_header.querySelector('.sp_author').innerText = reformatedJSON.authors;
+    sp_header.querySelector('.sp_toc').innerHTML = sp_navHTML;
+    sp_sectionEl.innerHTML = sectionHTML;
+
+    sp_sectionEl.insertBefore(sp_header, sp_sectionEl.firstChild);
+    document.querySelector('body').append(sp_sectionEl);
+}
+/**
+ *  Works with export of Kindle Highlights with the follwoing DOM structure:
+ * 
+ *  body
+ *   .bodyContainer
+ *   .notebookFor
+ *   .bookTitle
+ *   .authors
+ *   .citation
+ *   .sectionHeading
+ *   .noteHeading
+ *       .highlight_yellow
+ *   .noteText
+ *   .noteHeading
+ *       .highlight_yellow
+ *   .noteText
+ *   .
+ *   .
+ *   .
+ *  .sectionHeading
+ * 
+ * getHighlights method expects a document element from an exported html of Kindle highlights
+ * and returns a json 
+ */
+const sp_KindleScraper = (function(){
+    
+    var scrapedHighlights,
+        scrapedHighlightsArray,
+        cleanScrapedHighlights,
+        sectionsWithHighlights,
+        metaSection,
+        docJSON = {
+            "authors": undefined,
+            "title": undefined,
+            "sections": []
+        },
+        sectionIndexes = [];
+    
     /**
-     * Determine whether a node's text content is entirely whitespace.
-     *
-     * @param nod  A node implementing the |CharacterData| interface (i.e.,
-     *             a |Text|, |Comment|, or |CDATASection| node
-     * @return     True if all of the text content of |nod| is whitespace,
-     *             otherwise false.
+     * 
+     * @param {*} docToScrape document element from the html export of Kindle highlights
+     * 
+     * @return               {
+     *                          "authors": String,
+     *                          "title": String,
+     *                          "sections": [
+     *                               {
+     *                                   "sectionTitle": String,
+     *                                   "noteCount": Number,
+     *                                   "notes": [
+     *                                       {
+     *                                           "type": String,
+     *                                           "location": String,
+     *                                           "level": String,
+     *                                           "text": String
+     *                                       }
+     *                                   ]  
+     *                               }
+     *                           ]
+     *                      }
      */
-    function is_all_ws( nod )
-    {
-    // Use ECMA-262 Edition 3 String and RegExp features
-    return !(/[^\t\n\r ]/.test(nod.textContent));
+    function getHighlights(docToScrape) {
+        /** 
+         * NodeLists are array-like but don't feature many of the methods provided by the Array, 
+         * like forEach, map, filter, etc.
+         * 
+         * a very simple way to convert NodeLists to Arrays:
+         *   
+         *   var nodesArray = Array.prototype.slice.call(document.querySelectorAll("div"));
+         * 
+         * https://davidwalsh.name/nodelist-array
+         */ 
+        scrapedHighlights = docToScrape.querySelector('.bodyContainer').childNodes;
+        scrapedHighlightsArray = Array.prototype.slice.call(scrapedHighlights); // a very simple way to convert NodeLists to Arrays
+        cleanScrapedHighlights = sp_Util.removeWhiteSpace(scrapedHighlightsArray);
+        sectionIndexes = getSectionIndexes(cleanScrapedHighlights);
+        sectionsWithHighlights = splitIntoSections(cleanScrapedHighlights, sectionIndexes);
+        metaSection = getScrapedMetaArray(cleanScrapedHighlights, sectionIndexes);
+
+        docJSON.sections = buildSectionJSON(sectionsWithHighlights);
+        docJSON.authors = getAuthor(metaSection);
+        docJSON.title = getTitle(metaSection);
+
+        return docJSON;
     }
-
-    /**
-     * Determine if a node should be ignored by the iterator functions.
-     *
-     * @param nod  An object implementing the DOM1 |Node| interface.
-     * @return     true if the node is:
-     *                1) A |Text| node that is all whitespace
-     *                2) A |Comment| node
-     *             and otherwise false.
-     */
-    function is_ignorable( nod )
-    {
-    return ( nod.nodeType == 8) || // A comment node
-            ( (nod.nodeType == 3) && is_all_ws(nod) ); // a text node, all ws
-    }
-
-    // Find sections & their titles, position in the nodeList
-    // Find book title & author
-    // cleanScrapedHighlights.forEach((element, index) => {
-    //     let elClassList = element.classList;
-
-    //     if ( !(elClassList.contains('noteHeading') || elClassList.contains('noteText')) ) {
-    //         if (element.classList.contains('sectionHeading')) {
-    //             docJSON.sections.push({
-    //                 "sectionTitle": element.innerText
-    //             }); 
-    //         }
-    //         else if (element.classList.contains('bookTitle')) {
-    //             docJSON.title = element.innerText
-    //         }
-    //         else if (element.classList.contains('authors')) {
-    //             docJSON.authors = element.innerText
-    //         } 
-    //     }
-    // });
 
     /**
      * Find sections in the scraped document node list
@@ -230,57 +270,75 @@ function scrapeHighlights(docToScrape) {
         return title;
     }
 
-    var scrapedHighlights = docToScrape.querySelector('.bodyContainer').childNodes,
-        rawScrapedHighlightsArray = Array.prototype.slice.call(scrapedHighlights), // a very simple way to convert NodeLists to Arrays
-        docJSON = {
-            "authors": undefined,
-            "title": undefined,
-            "sections": []
-        },
-        sectionIndexes = [];
+    return {
+        getHighlights: getHighlights
+    }
+})();
 
-    const cleanScrapedHighlights = rawScrapedHighlightsArray.filter(nod => !is_ignorable(nod));
-    sectionIndexes = getSectionIndexes(cleanScrapedHighlights);
-    const sectionsWithHighlights = splitIntoSections(cleanScrapedHighlights, sectionIndexes);
-    const metaSection = getScrapedMetaArray(cleanScrapedHighlights, sectionIndexes);
+const sp_Util = (function(){
+    /**
+     *
+     * 
+     * 
+     * https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Whitespace_in_the_DOM
+     * 
+     * The Javascript code below defines several functions that make it easier 
+     * to deal with whitespace in the DOM:
+     *   - is_all_ws
+     *   - is_ignorable
+     *
+     * Throughout, whitespace is defined as one of the characters
+     *  "\t" TAB \u0009
+     *  "\n" LF  \u000A
+     *  "\r" CR  \u000D
+     *  " "  SPC \u0020
+     *
+     * This does not use Javascript's "\s" because that includes non-breaking
+     * spaces (and also some other characters).
+     */
 
-    docJSON.sections = buildSectionJSON(sectionsWithHighlights);
-    docJSON.authors = getAuthor(metaSection);
-    docJSON.title = getTitle(metaSection);
+    /**
+     * Determine whether a node's text content is entirely whitespace.
+     *
+     * @param nod  A node implementing the |CharacterData| interface (i.e.,
+     *             a |Text|, |Comment|, or |CDATASection| node
+     * @return     True if all of the text content of |nod| is whitespace,
+     *             otherwise false.
+     */
+    function is_all_ws( nod )
+    {
+        // Use ECMA-262 Edition 3 String and RegExp features
+        return !(/[^\t\n\r ]/.test(nod.textContent));
+    }
 
+    /**
+     * Determine if a node should be ignored by the iterator functions.
+     *
+     * @param nod  An object implementing the DOM1 |Node| interface.
+     * @return     true if the node is:
+     *                1) A |Text| node that is all whitespace
+     *                2) A |Comment| node
+     *             and otherwise false.
+     */
+    function is_ignorable( nod )
+    {
+        return ( nod.nodeType == 8) || // A comment node
+            ( (nod.nodeType == 3) && is_all_ws(nod) ); // a text node, all ws
+    }
 
-
-    // Templating and dom manipulation
-
-    var sp_navHTML = '';
-    var sectionHTML = '',
-    sp_sectionEl = document.createElement('article');
-    sp_sectionEl.classList.add('sp_highlights');
-
-    docJSON.sections.forEach((section, curr) => {
-        sp_navHTML += `<li id="#sp_section${curr+1}-toc">${section.sectionTitle}&nbsp;(${section.noteCount})</li>`;
-        
-        sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
-        sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
-
-        section.notes.forEach((note) => {
-            var noteHTML = 
-            `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
-            <span class="sp_note-level">&bull;</span> ${note.text}
-            <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span>
-            </p>`;
-            sectionHTML += noteHTML;
-        });
-        sectionHTML += '</section>';
-    });
-
-    var sp_header = document.createElement('header');
-    sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
-    sp_header.querySelector('.sp_title').innerText = docJSON.title; 
-    sp_header.querySelector('.sp_author').innerText = docJSON.authors;
-    sp_header.querySelector('.sp_toc').innerHTML = sp_navHTML;
-    sp_sectionEl.innerHTML = sectionHTML;
-
-    sp_sectionEl.insertBefore(sp_header, sp_sectionEl.firstChild);
-    document.querySelector('body').append(sp_sectionEl);
-}
+    /**
+     * Ebook apps export book highlights to HTML which has whitespace elements.
+     * These ignorable whitespace elements make it hard to manipulate and create new layout
+     * 
+     * @param {*} NodelistArray a nodeList converted to Array 
+     *                          so Array.prototype.filter can be used
+     * @return                  A new nodeList Array cleaned from all ignorable whitespace nodes
+     */
+    function cleanNodeListArrayFromWhiteSpace(NodelistArray){
+        return NodelistArray.filter(nod => !is_ignorable(nod));
+    }
+    
+    return {
+        removeWhiteSpace: cleanNodeListArrayFromWhiteSpace
+    }
+})();
