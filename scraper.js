@@ -29,7 +29,7 @@ function scrapeHighlights(sp_docToScrape) {
     var sp_header = document.createElement('header');
     sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
     sp_header.querySelector('.sp_title').innerText = reformatedJSON.title; 
-    sp_header.querySelector('.sp_author').innerText = reformatedJSON.authors;
+    sp_header.querySelector('.sp_author').innerText = 'by: ' + reformatedJSON.authors;
     sp_header.querySelector('.sp_toc').innerHTML = sp_navHTML;
     sp_sectionEl.innerHTML = sectionHTML;
 

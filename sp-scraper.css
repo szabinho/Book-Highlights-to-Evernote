@@ -81,3 +81,18 @@ h2 {
     line-height: 1.5em;
     pointer-events: none;
 }
+
+.sp_title {
+    margin-bottom: 1rem;
+}
+
+.sp_author {
+    margin-top: 0;
+    color: #666;
+    font-size: 1.333em;
+}
+
+.sp_section,
+.sp_toc {
+    margin-bottom: 3em;
+}
