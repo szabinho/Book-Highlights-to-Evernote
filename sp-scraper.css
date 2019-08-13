@@ -27,6 +27,7 @@ h2 {
     left: -.5em;
     top: 0;
     line-height: 1.5rem;
+    color: rgb(184,184,184);
 }
 .sp_note--yellow .sp_note-level {
     color: rgb(247, 206, 0);
@@ -34,6 +35,16 @@ h2 {
 .sp_note--blue .sp_note-level {
     color: rgb(66, 165, 255);
 }
+.sp_note--green .sp_note-level {
+    color: rgb(178,233,46);
+}
+.sp_note--pink .sp_note-level {
+    color: rgb(250,170,210);
+}
+.sp_note--purple .sp_note-level {
+    color: rgb(217,171,238);
+}
+
 .sp_note-location {
     color: rgb(177, 187, 186);
 }
