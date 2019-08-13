@@ -44,3 +44,38 @@ h2 {
     height: 1px; width: 1px; 
     margin: -1px; padding: 0; border: 0; 
 }
+
+.highlights-input {
+    max-width: 36em;
+    margin: auto;
+    padding: 24px;
+}
+
+#load-file {
+    position: absolute !important;
+    height: 1px; 
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* added line */
+}
+
+.highlights-input__dropzone {
+    cursor: pointer;
+    display: block;
+    line-height: 5em;
+    padding: 2em;
+    text-align: center;
+    border: 1px #c7c7c7 dashed;
+}
+
+.highlights-input__dropzone:hover {
+    border-color: #666;
+    background-color: #f5f5f5;
+}
+
+.highlights-input__dropzone__label {
+    display: inline-block;
+    line-height: 1.5em;
+}
