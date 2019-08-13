@@ -357,12 +357,25 @@ const sp_IbookScraper = (function(){
      * 
      */
     function getSectionIndexes(nodeArray) {
-        let indexes = [];
-        
-        nodeArray.forEach((el, index) => {
-            if (el.classList.contains('sectionHeading')) indexes.push(index);
-        });
+        let indexes = [],
+            sectionTitles = [],
+            sectionIndex = 0;
 
+        // Section title examples in .annotationchapter element:
+        // "Chapter One: What Is Management?, p. 27"
+        nodeArray.forEach((el, index) => {
+            var annotationchapter = el.querySelector('.annotationchapter'),
+                temp;
+            if (annotationchapter) {
+                temp = annotationchapter.innerText;
+                temp = temp.split(', p. ');
+                if (sectionTitles[sectionIndex-1] !== temp[0]) {
+                    sectionTitles[sectionIndex] = temp[0];
+                    sectionIndex += 1;
+                    indexes.push(index);
+                }
+            }
+        });
         return indexes;
     }
 
@@ -475,20 +488,22 @@ const sp_IbookScraper = (function(){
     }
 
     function getAuthor(metaNodeList) {
-        var author;
-        metaNodeList.forEach(el => {
-            if (el.classList.contains('authors')) {
-                author = el.innerText;
+        var author,
+            titleElIndex;
+        metaNodeList.forEach((el, i) => {
+            if (el.classList.contains('booktitle')) {
+                titleElIndex = i;
             }
         });
 
+        author = metaNodeList[titleElIndex+1].innerText;
         return author;
     }
 
     function getTitle(metaNodeList) {
         var title;
         metaNodeList.forEach(el => {
-            if (el.classList.contains('bookTitle')) {
+            if (el.classList.contains('booktitle')) {
                 title = el.innerText;
             }
         });
