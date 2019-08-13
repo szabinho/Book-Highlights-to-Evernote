@@ -23,6 +23,30 @@
         
         fileInput.addEventListener('change', () => {sp_generate(fileInput.files[0])});
 
+        dropzone.addEventListener("dragenter", dragenter, false);
+        dropzone.addEventListener("dragover", dragover, false);
+        dropzone.addEventListener("drop", drop, false);
+
+        function dragenter(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        function dragover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+
+            sp_generate(file);
+        }
+
         function sp_generate(fileToScrape) {
             console.log(fileInput.files);
             var url = URL.createObjectURL(fileToScrape);
