@@ -26,10 +26,20 @@
         dropzone.addEventListener("dragenter", dragenter, false);
         dropzone.addEventListener("dragover", dragover, false);
         dropzone.addEventListener("drop", drop, false);
+        dropzone.addEventListener("dragleave", dragleave, false);
 
         function dragenter(e) {
             e.stopPropagation();
             e.preventDefault();
+
+            dropzone.classList.add('highlights-input__dropzone--active');
+        }
+
+        function dragleave(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            dropzone.classList.remove('highlights-input__dropzone--active');
         }
 
         function dragover(e) {
@@ -45,6 +55,7 @@
             const file = dt.files[0];
 
             sp_generate(file);
+            dropzone.classList.remove('highlights-input__dropzone--active');
         }
 
         function sp_generate(fileToScrape) {

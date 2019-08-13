@@ -70,12 +70,14 @@ h2 {
     border: 1px #c7c7c7 dashed;
 }
 
-.highlights-input__dropzone:hover {
-    border-color: #666;
-    background-color: #f5f5f5;
+.highlights-input__dropzone:hover,
+.highlights-input__dropzone--active {
+    border-color: #999;
+    background-color: #f8f8f8;
 }
 
 .highlights-input__dropzone__label {
     display: inline-block;
     line-height: 1.5em;
+    pointer-events: none;
 }
