@@ -18,13 +18,14 @@
     <script>
         var htmlframe = document.createElement('iframe'),
             fileInput = document.querySelector('#load-file'),
-            btn_generate = document.querySelector('.sp_generate');
+            btn_generate = document.querySelector('.sp_generate'),
+            dropzone = document.querySelector('.highlights-input__dropzone');
         
-        fileInput.addEventListener('change', sp_generate);
+        fileInput.addEventListener('change', () => {sp_generate(fileInput.files[0])});
 
-        function sp_generate() {
+        function sp_generate(fileToScrape) {
             console.log(fileInput.files);
-            var url = URL.createObjectURL(fileInput.files[0]);
+            var url = URL.createObjectURL(fileToScrape);
             htmlframe.src = url;
             htmlframe.id = 'sp_util-frame';
             htmlframe.onload = function() {
