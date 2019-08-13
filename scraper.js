@@ -35,7 +35,7 @@ function scrapeHighlights(sp_docToScrape) {
     var sp_header = document.createElement('header');
     sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
     sp_header.querySelector('.sp_title').innerText = reformatedJSON.title; 
-    sp_header.querySelector('.sp_author').innerText = 'by: ' + reformatedJSON.authors;
+    sp_header.querySelector('.sp_author').innerText = 'By: ' + reformatedJSON.authors + ' - Excerpts from: ' + reformatedJSON.source;
     sp_header.querySelector('.sp_toc').innerHTML = sp_navHTML;
     sp_sectionEl.innerHTML = sectionHTML;
 
@@ -87,6 +87,7 @@ const sp_KindleScraper = (function(){
      * @return               {
      *                          "authors": String,
      *                          "title": String,
+     *                          "source": "Kindle",
      *                          "sections": [
      *                               {
      *                                   "sectionTitle": String,
@@ -124,6 +125,7 @@ const sp_KindleScraper = (function(){
         docJSON.sections = buildSectionJSON(sectionsWithHighlights);
         docJSON.authors = getAuthor(metaSection);
         docJSON.title = getTitle(metaSection);
+        docJSON.source = 'Kindle';
 
         return docJSON;
     }
@@ -302,6 +304,7 @@ const sp_IbookScraper = (function(){
      * @return               {
      *                          "authors": String,
      *                          "title": String,
+     *                          "source": "Apple Books",
      *                          "sections": [
      *                               {
      *                                   "sectionTitle": String,
@@ -340,6 +343,7 @@ const sp_IbookScraper = (function(){
         docJSON.sections = buildSectionJSON(sectionsWithHighlights);
         docJSON.authors = getAuthor(metaSection);
         docJSON.title = getTitle(metaSection);
+        docJSON.source = 'Apple Books';
 
         return docJSON;
     }
