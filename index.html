@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Restyle & Export Your Book Highlights</title>
     <script src="scraper.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap&subset=latin-ext" rel="stylesheet">
     
@@ -17,7 +17,8 @@
     </div>
     <p class="reset-highlights"><a href="#" class="reset-highlights__cta">Reset & start another</a></p>
     <script>
-        var htmlframe = document.createElement('iframe'),
+        var defaultDocTitle = "Restyle & Export Your Book Highlights",
+            htmlframe = document.createElement('iframe'),
             fileInput = document.querySelector('#load-file'),
             btn_generate = document.querySelector('.sp_generate'),
             btn_reset = document.querySelector('.reset-highlights__cta'),
@@ -66,6 +67,7 @@
             bodyEl.classList.remove('is-showing-highlights');
             bodyEl.removeChild(bodyEl.querySelector('.sp_highlights'));
             fileInput.value = null;
+            document.title = defaultDocTitle;
         });
 
         function sp_generate(fileToScrape) {

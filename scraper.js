@@ -41,6 +41,9 @@ function scrapeHighlights(sp_docToScrape) {
 
     sp_sectionEl.insertBefore(sp_header, sp_sectionEl.firstChild);
     document.querySelector('body').append(sp_sectionEl);
+
+    var newDocTitle = 'Highlights from: ' + reformatedJSON.title + ' - ' + reformatedJSON.authors;
+    document.title = newDocTitle;
 }
 /**
  *  Works with export of Kindle Highlights with the follwoing DOM structure:
