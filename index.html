@@ -59,7 +59,6 @@
         }
 
         function sp_generate(fileToScrape) {
-            console.log(fileInput.files);
             var url = URL.createObjectURL(fileToScrape);
             htmlframe.src = url;
             htmlframe.id = 'sp_util-frame';
