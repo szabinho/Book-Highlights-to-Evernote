@@ -266,8 +266,8 @@ function scrapeHighlights(docToScrape) {
         section.notes.forEach((note) => {
             var noteHTML = 
             `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
-            <span class="sp_note-level">&bull;</span> ${note.text} 
-            <span class="sp_note-location">Location: <span class="sp_note-location__value">${note.location}</span></span>
+            <span class="sp_note-level">&bull;</span> ${note.text}
+            <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span>
             </p>`;
             sectionHTML += noteHTML;
         });
