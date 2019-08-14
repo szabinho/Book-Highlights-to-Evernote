@@ -19,13 +19,10 @@ function scrapeHighlights(sp_docToScrape) {
 
     reformatedJSON.sections.forEach((section, curr) => {
         var toc__item,
-            sectionIndex = curr+1,
-            sectionTitle = section.sectionTitle,
-            sectionNoteCount = section.noteCount,
-            sectionHTML = [],
+            sectionHTML,
             notesHTML = [];
 
-        toc__item = `<li id="#sp_section${sectionIndex}-toc">${sectionTitle}&nbsp;(${sectionNoteCount})</li>`;
+        toc__item = `<li id="#sp_section${curr+1}-toc">${section.sectionTitle}&nbsp;(${section.noteCount})</li>`;
         htmlRender.toc__items.push(toc__item);
 
         section.notes.forEach((note) => {
