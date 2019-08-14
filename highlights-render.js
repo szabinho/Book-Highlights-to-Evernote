@@ -10,33 +10,39 @@ function scrapeHighlights(sp_docToScrape) {
 
     // Templating and dom manipulation
     var htmlRender = {
-            "toc__items": []
+            "toc__items": [],
+            "sections": []
         },
-        sectionHTML = '',
         sp_sectionEl = document.createElement('article');
+    
     sp_sectionEl.classList.add('sp_highlights');
 
     reformatedJSON.sections.forEach((section, curr) => {
         var toc__item,
             sectionIndex = curr+1,
             sectionTitle = section.sectionTitle,
-            sectionNoteCount = section.noteCount;
+            sectionNoteCount = section.noteCount,
+            sectionHTML = [],
+            notesHTML = [];
 
         toc__item = `<li id="#sp_section${sectionIndex}-toc">${sectionTitle}&nbsp;(${sectionNoteCount})</li>`;
         htmlRender.toc__items.push(toc__item);
-        
-        sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
-        sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
 
         section.notes.forEach((note) => {
-            var noteHTML = 
+            var note = 
             `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
             <span class="sp_note-level">&bull;</span> ${note.text}
             <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span>
             </p>`;
-            sectionHTML += noteHTML;
+            notesHTML.push(note);
         });
+
+        sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
+        sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
+        sectionHTML += notesHTML.join('');
         sectionHTML += '</section>';
+
+        htmlRender.sections.push(sectionHTML);
     });
 
     var sp_header = document.createElement('header');
@@ -44,7 +50,7 @@ function scrapeHighlights(sp_docToScrape) {
     sp_header.querySelector('.sp_title').innerText = reformatedJSON.title; 
     sp_header.querySelector('.sp_author').innerText = 'By: ' + reformatedJSON.authors + ' - Excerpts from: ' + reformatedJSON.source;
     sp_header.querySelector('.sp_toc').innerHTML = htmlRender.toc__items.join('');
-    sp_sectionEl.innerHTML = sectionHTML;
+    sp_sectionEl.innerHTML = htmlRender.sections.join('');
 
     sp_sectionEl.insertBefore(sp_header, sp_sectionEl.firstChild);
     document.querySelector('body').append(sp_sectionEl);
