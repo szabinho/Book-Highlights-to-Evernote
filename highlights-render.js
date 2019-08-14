@@ -22,9 +22,6 @@ function scrapeHighlights(sp_docToScrape) {
             sectionHTML,
             notesHTML = [];
 
-        toc__item = `<li id="#sp_section${curr+1}-toc">${section.sectionTitle}&nbsp;(${section.noteCount})</li>`;
-        htmlRender.toc__items.push(toc__item);
-
         section.notes.forEach((note) => {
             var note = 
             `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
@@ -40,6 +37,9 @@ function scrapeHighlights(sp_docToScrape) {
         sectionHTML += '</section>';
 
         htmlRender.sections.push(sectionHTML);
+        
+        toc__item = `<li id="#sp_section${curr+1}-toc">${section.sectionTitle}&nbsp;(${section.noteCount})</li>`;
+        htmlRender.toc__items.push(toc__item);
     });
 
     var sp_header = document.createElement('header');
