@@ -275,7 +275,7 @@ const sp_IbookScraper = (function(){
      *                                   ]  
      *                               }
      *                           ]
-     *                      }
+     *                       }
      */
     function getHighlights(docToScrape) {
         /** 
