@@ -8,15 +8,12 @@ function scrapeHighlights(sp_docToScrape) {
         reformatedJSON = sp_IbookScraper.getHighlights(sp_docToScrape);
     } 
 
-    // Templating and dom manipulation
     var htmlRender = {
             "toc__items": [],
             "sections": []
-        },
-        sp_sectionEl = document.createElement('article');
-    
-    sp_sectionEl.classList.add('sp_highlights');
-
+        };
+        
+    // Render sections > notes and ToC
     reformatedJSON.sections.forEach((section, curr) => {
         var toc__item,
             sectionHTML = '',
@@ -42,16 +39,29 @@ function scrapeHighlights(sp_docToScrape) {
         htmlRender.toc__items.push(toc__item);
     });
 
-    var sp_header = document.createElement('header');
-    sp_header.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
-    sp_header.querySelector('.sp_title').innerText = reformatedJSON.title; 
-    sp_header.querySelector('.sp_author').innerText = 'By: ' + reformatedJSON.authors + ' - Excerpts from: ' + reformatedJSON.source;
-    sp_header.querySelector('.sp_toc').innerHTML = htmlRender.toc__items.join('');
-    sp_sectionEl.innerHTML = htmlRender.sections.join('');
+    // Put the rendered elements together and add it to the document
+    var renderedEl,
+        headerEl,
+        sectionsEl,
+        newDocTitle;
 
-    sp_sectionEl.insertBefore(sp_header, sp_sectionEl.firstChild);
-    document.querySelector('body').append(sp_sectionEl);
+    headerEl = document.createElement('header');
+    headerEl.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
+    headerEl.querySelector('.sp_title').innerText = reformatedJSON.title; 
+    headerEl.querySelector('.sp_author').innerText = 'By: ' + reformatedJSON.authors + ' - Excerpts from: ' + reformatedJSON.source;
+    headerEl.querySelector('.sp_toc').innerHTML = htmlRender.toc__items.join('');
 
-    var newDocTitle = 'Highlights from: ' + reformatedJSON.title + ' - ' + reformatedJSON.authors;
+    sectionsEl = document.createElement('div');
+    sectionsEl.classList.add('sp_highlights__notes');
+    sectionsEl.innerHTML = htmlRender.sections.join('');
+    
+    renderedEl = document.createElement('article');
+    renderedEl.classList.add('sp_highlights');
+    renderedEl.append(headerEl);
+    renderedEl.append(sectionsEl);
+    
+    document.querySelector('body').append(renderedEl);
+
+    newDocTitle = 'Highlights from: ' + reformatedJSON.title + ' - ' + reformatedJSON.authors;
     document.title = newDocTitle;
 }
