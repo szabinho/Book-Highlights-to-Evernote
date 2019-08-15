@@ -1,12 +1,4 @@
-function scrapeHighlights(sp_docToScrape) {
-    var reformatedJSON;
-
-    if (sp_docToScrape.querySelector('.bodyContainer')) {
-        reformatedJSON = sp_KindleScraper.getHighlights(sp_docToScrape);
-    }
-    else {
-        reformatedJSON = sp_IbookScraper.getHighlights(sp_docToScrape);
-    } 
+function renderHighlights(viewJson) {
 
     var htmlRender = {
             "toc__items": [],
@@ -14,7 +6,7 @@ function scrapeHighlights(sp_docToScrape) {
         };
         
     // Render sections > notes and ToC
-    reformatedJSON.sections.forEach((section, curr) => {
+    viewJson.sections.forEach((section, curr) => {
         var toc__item,
             sectionHTML = '',
             notesHTML = [];
@@ -47,8 +39,8 @@ function scrapeHighlights(sp_docToScrape) {
 
     headerEl = document.createElement('header');
     headerEl.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
-    headerEl.querySelector('.sp_title').innerText = reformatedJSON.title; 
-    headerEl.querySelector('.sp_author').innerText = 'By: ' + reformatedJSON.authors + ' - Excerpts from: ' + reformatedJSON.source;
+    headerEl.querySelector('.sp_title').innerText = viewJson.title; 
+    headerEl.querySelector('.sp_author').innerText = 'By: ' + viewJson.authors + ' - Excerpts from: ' + viewJson.source;
     headerEl.querySelector('.sp_toc').innerHTML = htmlRender.toc__items.join('');
 
     sectionsEl = document.createElement('div');
@@ -62,6 +54,6 @@ function scrapeHighlights(sp_docToScrape) {
     
     document.querySelector('body').append(renderedEl);
 
-    newDocTitle = 'Highlights from: ' + reformatedJSON.title + ' - ' + reformatedJSON.authors;
+    newDocTitle = 'Highlights from: ' + viewJson.title + ' - ' + viewJson.authors;
     document.title = newDocTitle;
 }

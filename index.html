@@ -75,7 +75,16 @@
             htmlframe.src = url;
             htmlframe.id = 'sp_util-frame';
             htmlframe.onload = function() {
-                scrapeHighlights(htmlframe.contentDocument);
+                var sp_docToScrape = htmlframe.contentDocument,
+                    viewJson;
+
+                if (sp_docToScrape.querySelector('.bodyContainer')) {
+                    viewJson = sp_KindleScraper.getHighlights(sp_docToScrape);
+                }
+                else {
+                    viewJson = sp_IbookScraper.getHighlights(sp_docToScrape);
+                } 
+                renderHighlights(viewJson);
             }
             bodyEl.append(htmlframe);
             bodyEl.classList.add('is-showing-highlights');
