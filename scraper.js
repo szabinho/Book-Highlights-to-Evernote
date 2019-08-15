@@ -239,6 +239,27 @@ const sp_KindleScraper = (function(){
     }
 })();
 
+/**
+ * Works with html exports of Apple Books Highlights with the following DOM structure:
+ * 
+ *  body
+ *    .ltr
+ *      .booktitle
+ *      h2 <!-- author -->
+ *      .separator <!-- decorative element -->
+ *      .annotation
+ *        .annotationheader
+ *            .annotationdate
+ *            .annotationchapter - includes the location as page number, ex: ', p. 8'
+ *        .annotationcontent
+ *            .annotationselectionMarker.yellow - highlight colour/level
+ *            .annotationselectioninnermargin - decorative element, can be ignored
+ *            .annotationrepresentativetext - highlighted text
+ *            .annotationnote
+ * 
+ *  getHighlights method expects a document element from an exported html of 
+ *  Apple Books highlights and returns a json      
+ */
 const sp_IbookScraper = (function(){
     
     var scrapedHighlights,
