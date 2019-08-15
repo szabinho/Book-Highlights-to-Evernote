@@ -201,7 +201,7 @@ const sp_KindleScraper = (function(){
                 note.type       = noteHeading.childNodes[0].nodeValue.trim().replace('(','');
                 note.level      = noteHeading.childNodes[1].innerText.trim();
                 note.location   = noteHeading.childNodes[2].nodeValue.trim().replace(') - Location ','');
-                note.text       = noteText.innerText
+                note.text       = noteText.innerText;
 
                 sectionJSON.notes.push(note);
             }
