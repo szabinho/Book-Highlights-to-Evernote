@@ -98,13 +98,15 @@
                 
             }
 
-
+            // Handling of json export (Kindle via bookcision: https://github.com/TristanH/bookcision)
             if(fileToScrape.type.includes("json")) {
                 const reader = new FileReader();
                 var jsonToScrape;
                 reader.onload = function() {
                     jsonToScrape = reader.result;
-                    jsonToScrape = JSON.parse(jsonToScrape);
+                    viewJson = JSON.parse(jsonToScrape);
+                    renderedEl = renderHighlights(viewJson);
+                    showRenderedHighlights();
                 }
                 reader.readAsText(fileToScrape);
             }
