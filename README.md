@@ -1,4 +1,4 @@
-# Book Highlights to Evernote
+# Keep Your Book Highlights Great
  Restyle highlights exported from Kindle or iBooks
  
-[Try on GitHub Pages](https://szabinho.github.io/Book-Highlights-to-Evernote/)
+[Try on GitHub Pages](https://szabinho.github.io/Keep-Your-Book-Highlights-Great/)
