@@ -49,6 +49,12 @@ h2 {
 .sp_note-location {
     color: rgb(177, 187, 186);
 }
+a.sp_note-location {
+    text-decoration: none;
+}
+a.sp_note-location:hover {
+    text-decoration: underline;
+}
 #sp_util-frame {
     display: none;
 }

@@ -77,6 +77,7 @@
                 renderedEl,
                 newDocTitle;
             
+            // Handling of HTML exports (Kindle/Apple Books)
             if (fileToScrape.type == "text/html") {
                 url = URL.createObjectURL(fileToScrape);
                 htmlframe.src = url;
@@ -95,6 +96,19 @@
                     showRenderedHighlights();
                 }
                 
+            }
+
+            // Handling of json export (Kindle via bookcision: https://github.com/TristanH/bookcision)
+            if(fileToScrape.type.includes("json")) {
+                const reader = new FileReader();
+                var jsonToScrape;
+                reader.onload = function() {
+                    jsonToScrape = reader.result;
+                    viewJson = JSON.parse(jsonToScrape);
+                    renderedEl = renderHighlights(viewJson);
+                    showRenderedHighlights();
+                }
+                reader.readAsText(fileToScrape);
             }
 
             function showRenderedHighlights() {
