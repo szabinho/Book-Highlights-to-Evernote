@@ -34,8 +34,7 @@ function renderHighlights(viewJson) {
     // Put the rendered elements together and add it to the document
     var renderedEl,
         headerEl,
-        sectionsEl,
-        newDocTitle;
+        sectionsEl;
 
     headerEl = document.createElement('header');
     headerEl.innerHTML = '<h1 class="sp_title"></h1><p class="sp_author"></p><ol class="sp_toc"></ol>';
@@ -51,9 +50,6 @@ function renderHighlights(viewJson) {
     renderedEl.classList.add('sp_highlights');
     renderedEl.append(headerEl);
     renderedEl.append(sectionsEl);
-    
-    document.querySelector('body').append(renderedEl);
 
-    newDocTitle = 'Highlights from: ' + viewJson.title + ' - ' + viewJson.authors;
-    document.title = newDocTitle;
+    return renderedEl;
 }

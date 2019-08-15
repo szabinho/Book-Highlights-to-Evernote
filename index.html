@@ -71,23 +71,40 @@
         });
 
         function sp_generate(fileToScrape) {
-            var url = URL.createObjectURL(fileToScrape);
-            htmlframe.src = url;
-            htmlframe.id = 'sp_util-frame';
-            htmlframe.onload = function() {
-                var sp_docToScrape = htmlframe.contentDocument,
-                    viewJson;
+            var url,
+                sp_docToScrape,
+                viewJson,
+                renderedEl,
+                newDocTitle;
+            
+            if (fileToScrape.type == "text/html") {
+                url = URL.createObjectURL(fileToScrape);
+                htmlframe.src = url;
+                htmlframe.id = 'sp_util-frame';
+                bodyEl.append(htmlframe);
+                htmlframe.onload = function() {
+                    sp_docToScrape = htmlframe.contentDocument;
 
-                if (sp_docToScrape.querySelector('.bodyContainer')) {
-                    viewJson = sp_KindleScraper.getHighlights(sp_docToScrape);
+                    if (sp_docToScrape.querySelector('.bodyContainer')) {
+                        viewJson = sp_KindleScraper.getHighlights(sp_docToScrape);
+                    }
+                    else {
+                        viewJson = sp_IbookScraper.getHighlights(sp_docToScrape);
+                    } 
+                    renderedEl = renderHighlights(viewJson);
+                    showRenderedHighlights();
                 }
-                else {
-                    viewJson = sp_IbookScraper.getHighlights(sp_docToScrape);
-                } 
-                renderHighlights(viewJson);
+                
             }
-            bodyEl.append(htmlframe);
-            bodyEl.classList.add('is-showing-highlights');
+
+            function showRenderedHighlights() {
+                bodyEl.classList.add('is-showing-highlights');
+
+                document.querySelector('body').append(renderedEl);
+
+                newDocTitle = 'Highlights from: ' + viewJson.title + ' - ' + viewJson.authors;
+                document.title = newDocTitle;
+            }
         }
     </script>
 </body>
