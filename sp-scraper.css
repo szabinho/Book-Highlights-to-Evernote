@@ -16,34 +16,34 @@ h2 {
     margin: auto;
     padding: 24px;
 }
+.sp_section > ul,
+.sp_highlights > ul {
+    padding-left: 0;
+}
 .sp_toc {
     padding-left: 0;
 }
 .sp_note {
-    position: relative;
-}
-.sp_note-level {
-    font-size: 1.8em;
-    position: absolute;
-    left: -.5em;
-    top: 0;
-    line-height: 1.5rem;
     color: rgb(184,184,184);
 }
-.sp_note--yellow .sp_note-level {
+.sp_note--yellow {
     color: rgb(247, 206, 0);
 }
-.sp_note--blue .sp_note-level {
+.sp_note--blue {
     color: rgb(66, 165, 255);
 }
-.sp_note--green .sp_note-level {
+.sp_note--green {
     color: rgb(178,233,46);
 }
-.sp_note--pink .sp_note-level {
+.sp_note--pink {
     color: rgb(250,170,210);
 }
-.sp_note--purple .sp_note-level {
+.sp_note--purple {
     color: rgb(217,171,238);
+}
+
+.sp_note__text {
+    color: #222;
 }
 
 .sp_note-location {

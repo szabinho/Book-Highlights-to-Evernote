@@ -8,17 +8,17 @@ function renderHighlights(viewJson) {
         
     // Kindle Highlights json via Bookcision: has asin indentifier from Amazon cloud reader
     if (isJsonBookcision) {
-        var notesHTML = [];
+        var notesHTML = ['<ul>'];
 
         viewJson.highlights.forEach((note) => {
             var note = 
-            `<p class="sp_note sp_note--highlight">
-                <span class="sp_note-level">&bull;</span> ${note.text}
-                <a href="${note.location.url}" class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location.value}</span></a>
-            </p>`;
+            `<li class="sp_note sp_note--highlight"><p class="sp_note__text">${note.text}
+                <a href="${note.location.url}" class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location.value}</span></a></p>
+            </li>`;
             notesHTML.push(note);
         });
 
+        notesHTML.push('</ul>')
         htmlRender.sections = notesHTML;
         viewJson.source = "Kindle Store / Amazon"; // Bookcision Json doesn't have this custom property
     } // Highlights export from html file scraped and parsed to viewJson
@@ -31,17 +31,16 @@ function renderHighlights(viewJson) {
 
             section.notes.forEach((note) => {
                 var note = 
-                `<p class="sp_note sp_note--${note.level} sp_note--${note.type}">
-                <span class="sp_note-level">&bull;</span> ${note.text}
-                <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span>
-                </p>`;
+                `<li class="sp_note sp_note--${note.level} sp_note--${note.type}"><p class="sp_note__text">${note.text}
+                <span class="sp_note-location">&mdash;Location: <span class="sp_note-location__value">${note.location}</span></span><p>
+                </li>`;
                 notesHTML.push(note);
             });
 
             sectionHTML += `<section class="sp_section" id="sp_section${curr+1}">`;
-            sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2>`;
+            sectionHTML += `<h2 class="sp_section-title">${section.sectionTitle} (${section.noteCount})</h2><ul>`;
             sectionHTML += notesHTML.join('');
-            sectionHTML += '</section>';
+            sectionHTML += '</ul></section>';
 
             htmlRender.sections.push(sectionHTML);
             
